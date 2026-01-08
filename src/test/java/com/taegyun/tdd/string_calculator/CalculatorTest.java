@@ -20,4 +20,18 @@ class CalculatorTest {
 
         Assertions.assertThat(calculator.add("7")).isEqualTo(7);
     }
+
+    @Test
+    void 쉼표_구분자로_숫자의_합을_반환한다() {
+        Calculator calculator = new Calculator();
+
+        Assertions.assertThat(calculator.add("1,2,3")).isEqualTo(6);
+    }
+
+    @Test
+    void 공백을_포함한_쉼표_구분자로_숫자의_합을_반환한다() {
+        Calculator calculator = new Calculator();
+
+        Assertions.assertThat(calculator.add("1, 2, 3")).isEqualTo(6);
+    }
 }

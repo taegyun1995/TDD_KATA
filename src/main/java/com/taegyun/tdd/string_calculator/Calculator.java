@@ -6,7 +6,15 @@ public class Calculator {
         if (text == null || text.isEmpty()) {
             return 0;
         }
-        return Integer.parseInt(text);
+
+        int result = 0;
+        String[] split = text.split(",");
+        for (String s : split) {
+            int integer = Integer.parseInt(s.trim());
+            result += integer;
+        }
+
+        return result;
     }
 
 }
