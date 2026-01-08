@@ -1,5 +1,7 @@
 package com.taegyun.tdd.string_calculator;
 
+import java.util.regex.Pattern;
+
 public class Calculator {
 
     public int add(String numbers) {
@@ -12,7 +14,7 @@ public class Calculator {
         // 커스텀 구분자 처리
         if (numbers.startsWith("//")) {
             int newlineIndex = numbers.indexOf("\n");
-            delimiter = numbers.substring(2, newlineIndex);
+            delimiter = Pattern.quote(numbers.substring(2, newlineIndex));
             numbers = numbers.substring(newlineIndex + 1);
         }
 

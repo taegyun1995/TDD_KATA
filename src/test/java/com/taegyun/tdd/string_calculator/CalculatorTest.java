@@ -37,5 +37,7 @@ class CalculatorTest {
     @Test
     void 커스텀_구분자를_사용하여_숫자의_합을_반환한다() {
         Assertions.assertThat(calculator.add("//;\n1;2;3")).isEqualTo(6);
+        Assertions.assertThat(calculator.add("//|\n1|2|3")).isEqualTo(6);
+        Assertions.assertThat(calculator.add("//-\n1-2-3")).isEqualTo(6);
     }
 }
