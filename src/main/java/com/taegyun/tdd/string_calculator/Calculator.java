@@ -6,46 +6,50 @@ import java.util.regex.Pattern;
 
 public class Calculator {
 
-    public int add(String numbers) {
-        if (numbers == null || numbers.isEmpty()) {
+    private static final String DEFAULT_DELIMITER = ",|\n";
+
+    public int add(String input) {
+        if (input == null || input.isEmpty()) {
             return 0;
         }
 
-        String delimiter = ",|\n";
+        ParsedInput parsed = parse(input);
+        String[] tokens = parsed.numbers().split(parsed.delimiter());
 
-        // 커스텀 구분자 처리
-        if (numbers.startsWith("//")) {
-            int newlineIndex = numbers.indexOf("\n");
-            delimiter = Pattern.quote(numbers.substring(2, newlineIndex));
-            numbers = numbers.substring(newlineIndex + 1);
+        validate(tokens);
+
+        return sum(tokens);
+    }
+
+    private ParsedInput parse(String input) {
+        if (input.startsWith("//")) {
+            int newlineIndex = input.indexOf("\n");
+            String delimiter = Pattern.quote(input.substring(2, newlineIndex));
+            String numbers = input.substring(newlineIndex + 1);
+            return new ParsedInput(delimiter, numbers);
         }
+        return new ParsedInput(DEFAULT_DELIMITER, input);
+    }
 
-        int result = 0;
-        String[] split = numbers.split(delimiter);
-        List<Integer> negativeNumbers = new ArrayList<>();
+    private void validate(String[] tokens) {
         List<String> invalidValues = new ArrayList<>();
+        List<Integer> negativeNumbers = new ArrayList<>();
 
-        for (String s : split) {
-            String trimmed = s.trim();
-            int number;
+        for (String token : tokens) {
+            String trimmed = token.trim();
 
             try {
-                number = Integer.parseInt(trimmed);
+                int number = Integer.parseInt(trimmed);
+                if (number < 0) {
+                    negativeNumbers.add(number);
+                }
             } catch (NumberFormatException e) {
                 invalidValues.add(trimmed);
-                continue;
             }
-
-            if (number < 0) {
-                negativeNumbers.add(number);
-            }
-
-            result += number;
         }
 
         if (!invalidValues.isEmpty()) {
-            String invalidStr = String.join(", ", invalidValues);
-            throw new RuntimeException("숫자가 아닌 값이 포함되어 있습니다: " + invalidStr);
+            throw new RuntimeException("숫자가 아닌 값이 포함되어 있습니다: " + String.join(", ", invalidValues));
         }
 
         if (!negativeNumbers.isEmpty()) {
@@ -55,7 +59,16 @@ public class Calculator {
             );
             throw new RuntimeException("음수는 허용되지 않습니다: " + negativeStr);
         }
+    }
 
+    private int sum(String[] tokens) {
+        int result = 0;
+        for (String token : tokens) {
+            int number = Integer.parseInt(token.trim());
+            if (number <= 1000) {
+                result += number;
+            }
+        }
         return result;
     }
 
